@@ -1,9 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
-export default async function ExperimentPage({ params }: { params: { id: string } }) {
+export default async function ExperimentPage({ params }: { params: Promise<{ id: string }> }) {
+	const { id } = await params;
+	if (!id) {
+		return <div className="p-6 text-sm text-red-500">Missing experiment id</div>;
+	}
 	const exp = await prisma.experiment.findUnique({
-		where: { id: params.id },
+		where: { id },
 		include: { responses: { include: { metrics: true } }, },
 	});
 	if (!exp) {
@@ -14,7 +18,7 @@ export default async function ExperimentPage({ params }: { params: { id: string 
 			<header className="border-b border-zinc-200/60 bg-white/70 backdrop-blur dark:border-zinc-800 dark:bg-black/50">
 				<div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
 					<Link href="/" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white">← Back</Link>
-					<a href={`/api/experiments/${exp.id}/export`} className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm text-white hover:bg-black dark:bg-white dark:text-black">Export JSON</a>
+					<a href={`/api/experiments/${exp.id}/export`} download className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm text-white hover:bg-black dark:bg-white dark:text-black">Export JSON</a>
 				</div>
 			</header>
 			<main className="mx-auto max-w-6xl px-6 py-8">

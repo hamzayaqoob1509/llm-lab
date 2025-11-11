@@ -1,4 +1,16 @@
-import syllable from "syllable";
+import * as syllableModule from "syllable";
+
+function getSyllableFn(mod: any): (word: string) => number {
+	if (typeof mod === "function") return mod as (w: string) => number;
+	if (typeof mod?.default === "function") return mod.default as (w: string) => number;
+	if (typeof mod?.syllable === "function") return mod.syllable as (w: string) => number;
+	// Fallback heuristic if library shape is unexpected
+	return (word: string) => {
+		const m = word.toLowerCase().match(/[aeiouy]+/g);
+		return Math.max(1, m ? m.length : 0);
+	};
+}
+const syllable: (word: string) => number = getSyllableFn(syllableModule as any);
 
 export type MetricScores = {
 	readability: number;

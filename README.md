@@ -52,7 +52,13 @@ A polished, full-stack Next.js app to explore how LLM parameters like `temperatu
 Use the Export button on an experiment page to download JSON for offline analysis.
 
 ### Deployment
-Deploy on Vercel. Set `DATABASE_URL` (SQLite file is fine) and `OPENAI_API_KEY` as env vars.
+Deploy on Vercel using Neon (Postgres):
+1) Create a Neon Postgres database and copy the connection string into `DATABASE_URL`.
+2) In Vercel Project Settings → Environment Variables, set:
+   - `DATABASE_URL` = your Neon connection string
+   - `OPENAI_API_KEY` (optional)
+3) The app uses Prisma WASM engine for portability. Build runs `prisma migrate deploy` automatically.
+4) Push your repo and deploy. API routes run in Node runtime.
 
 ### Time Estimates
 See `time-estimates.csv` for initial vs. actual tracked time.

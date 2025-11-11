@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { getLLM } from "@/lib/llmProvider";
 import { computeMetrics } from "@/lib/metrics";
 
+export const runtime = "nodejs";
+
 const CreateSchema = z.object({
 	prompt: z.string().min(5),
 	model: z.string().default("gpt-4o-mini"),

@@ -1,0 +1,13 @@
+{
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "functions": {
+    "src/app/api/**/route.ts": {
+      "runtime": "nodejs22.x",
+      "memory": 512,
+      "maxDuration": 60
+    }
+  }
+}
+

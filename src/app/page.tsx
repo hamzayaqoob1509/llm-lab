@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ExperimentForm } from "@/components/ExperimentForm";
+import { ExperimentForm } from "../components/ExperimentForm";
 import { ExperimentsList } from "@/components/ExperimentsList";
 
 export default function Home() {
