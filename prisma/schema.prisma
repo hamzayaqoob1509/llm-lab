@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Experiment {
+  id               String     @id @default(cuid())
+  createdAt        DateTime   @default(now())
+  prompt           String
+  model            String
+  tempMin          Float
+  tempMax          Float
+  tempStep         Float
+  topPMin          Float
+  topPMax          Float
+  topPStep         Float
+  totalCombinations Int
+  status           ExperimentStatus @default(RUNNING)
+  durationMs       Int?
+  errorMessage     String?
+  responses        Response[]
+}
+
+model Response {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  experimentId  String
+  experiment    Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+  model         String
+  temperature   Float
+  topP          Float
+  content       String
+  latencyMs     Int
+  finishReason  String?
+  metrics       Metrics?
+}
+
+model Metrics {
+  id             String   @id @default(cuid())
+  responseId     String   @unique
+  response       Response @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  readability    Float
+  coverage       Float
+  structure      Float
+  redundancy     Float
+  coherence      Float
+  lengthScore    Float
+  aggregate      Float
+}
+
+enum ExperimentStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+}

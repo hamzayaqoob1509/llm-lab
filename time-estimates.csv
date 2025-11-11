@@ -1,0 +1,14 @@
+Task,Estimate (h),Actual (h),Notes,Start,End
+Scaffold Next.js app (TS, Tailwind),0.5,,,
+Install core deps (Prisma, metric libs),0.3,,,
+Prisma models & migration,0.8,,,
+LLM provider + mock fallback,0.8,,,
+Metrics engine (6 metrics + aggregate),1.5,,,
+API routes (create/list/get/export),1.0,,,
+UI: form + list + detail grid,2.0,,,
+Export feature (JSON),0.2,,,
+Styling polish (headers, dark mode, spacing),0.8,,,
+Docs (README, env, architecture),0.7,,,
+Deployment (Vercel + DB),0.7,,,
+Demo video,1.0,,,
+

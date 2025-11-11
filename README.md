@@ -1,3 +1,62 @@
+## LLM Lab
+
+A polished, full-stack Next.js app to explore how LLM parameters like `temperature` and `top_p` affect outputs. Generate multiple responses across parameter grids, evaluate custom, programmatic quality metrics, compare results, and export experiments.
+
+### Tech Stack
+- Frontend: Next.js (App Router), TypeScript, Tailwind CSS
+- Backend: Next.js API routes, Prisma (SQLite)
+- Metrics: custom heuristics (readability, coverage, structure, redundancy, coherence, length)
+- LLM: OpenAI (with mock fallback if no API key)
+
+### Getting Started
+1. Install:
+   ```bash
+   npm install
+   ```
+2. Configure env:
+   - Create `.env` with:
+     ```
+     DATABASE_URL="file:./dev.db"
+     OPENAI_API_KEY= # optional; app uses mock if not set
+     ```
+3. Setup DB:
+   ```bash
+   npx prisma generate
+   npx prisma migrate dev
+   ```
+4. Run:
+   ```bash
+   npm run dev
+   ```
+
+### Architecture
+- `src/app/api/experiments`:
+  - `POST /api/experiments`: creates an experiment, runs grid generation, computes metrics, persists
+  - `GET /api/experiments`: list experiments
+  - `GET /api/experiments/[id]`: fetch details
+  - `GET /api/experiments/[id]/export`: download full JSON
+- `src/lib/llmProvider.ts`: OpenAI client + deterministic mock fallback
+- `src/lib/metrics.ts`: quality metrics (no additional LLM calls)
+- `prisma/schema.prisma`: `Experiment`, `Response`, `Metrics`
+
+### Metrics (0..1)
+- Readability: normalized Flesch Reading Ease
+- Coverage: prompt keyword coverage ratio
+- Structure: headings/lists/code/paragraphs presence
+- Redundancy: penalizes repeated bigrams
+- Coherence: discourse markers + sentence length variability
+- Length: distance from inferred target word count
+- Aggregate: weighted blend
+
+### Export
+Use the Export button on an experiment page to download JSON for offline analysis.
+
+### Deployment
+Deploy on Vercel. Set `DATABASE_URL` (SQLite file is fine) and `OPENAI_API_KEY` as env vars.
+
+### Time Estimates
+See `time-estimates.csv` for initial vs. actual tracked time.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
