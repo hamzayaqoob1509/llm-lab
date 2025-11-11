@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
@@ -11,6 +11,7 @@ export async function GET(_req: NextRequest, ctx: Params) {
 	if (!id) {
 		return NextResponse.json({ error: "Missing id" }, { status: 400 });
 	}
+	const prisma = await getPrisma();
 	const item = await prisma.experiment.findUnique({
 		where: { id },
 		include: { responses: { include: { metrics: true } } },

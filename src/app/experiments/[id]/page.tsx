@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import Link from "next/link";
 
 type RespWithMetrics = {
@@ -23,6 +23,7 @@ export default async function ExperimentPage({ params }: { params: Promise<{ id:
 	if (!id) {
 		return <div className="p-6 text-sm text-red-500">Missing experiment id</div>;
 	}
+	const prisma = await getPrisma();
 	const exp = await prisma.experiment.findUnique({
 		where: { id },
 		include: { responses: { include: { metrics: true } }, },

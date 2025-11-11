@@ -21,10 +21,10 @@ export function ExperimentsList() {
 	);
 	if (isLoading) return <div className="text-sm text-zinc-500">Loading…</div>;
 	if (error) return <div className="text-sm text-red-500">Failed to load experiments</div>;
-	if (!data || data.experiments.length === 0) return <div className="text-sm text-zinc-500">No experiments yet.</div>;
+	if (!data || data.experiments?.length === 0) return <div className="text-sm text-zinc-500">No experiments yet.</div>;
 	return (
 		<div className="divide-y divide-zinc-200 overflow-hidden rounded-lg border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-950">
-			{data.experiments.map((e) => (
+			{data.experiments?.map((e: Item) => (
 				<Link key={e.id} href={`/experiments/${e.id}`} className="block px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-900">
 					<div className="flex items-center justify-between gap-3">
 						<div className="min-w-0">

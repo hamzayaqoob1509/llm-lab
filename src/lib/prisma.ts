@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import path from "path";
 
 declare global {
-    var prismaGlobal: PrismaClient | undefined;
+	// eslint-disable-next-line no-var
+	var prismaGlobal: any | undefined;
 }
 
 function resolveDatabaseUrl(): string | undefined {
@@ -32,13 +32,16 @@ function resolveDatabaseUrl(): string | undefined {
 	return raw;
 }
 
-export const prisma: PrismaClient =
-	global.prismaGlobal ??
-	new PrismaClient({
+export async function getPrisma() {
+	if (global.prismaGlobal) return global.prismaGlobal;
+	const { PrismaClient } = await import("@prisma/client");
+	const client = new PrismaClient({
 		log: ["error", "warn"],
 		datasourceUrl: resolveDatabaseUrl(),
 	});
-
-if (process.env.NODE_ENV !== "production") {
-	global.prismaGlobal = prisma;
+	if (process.env.NODE_ENV !== "production") {
+		global.prismaGlobal = client;
+	}
+	return client;
 }
+

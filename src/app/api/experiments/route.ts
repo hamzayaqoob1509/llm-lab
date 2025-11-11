@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
+import { getPrisma } from "@/lib/prisma";
 import { getLLM } from "@/lib/llmProvider";
 import { computeMetrics } from "@/lib/metrics";
 
@@ -20,6 +20,7 @@ const CreateSchema = z.object({
 
 export async function GET() {
 	try {
+		const prisma = await getPrisma();
 		const experiments = await prisma.experiment.findMany({
 			orderBy: { createdAt: "desc" },
 			select: {
@@ -47,6 +48,7 @@ export async function POST(req: NextRequest) {
 	const combos = temps.flatMap((t) => tops.map((p) => ({ temperature: t, topP: p })));
 
 	const startedAt = Date.now();
+	const prisma = await getPrisma();
 	const exp = await prisma.experiment.create({
 		data: {
 			prompt, model,
