@@ -1,6 +1,23 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
+type RespWithMetrics = {
+	id: string;
+	metrics: {
+		aggregate: number;
+		readability: number;
+		coverage: number;
+		structure: number;
+		redundancy: number;
+		coherence: number;
+		lengthScore: number;
+	} | null;
+	temperature: number;
+	topP: number;
+	latencyMs: number;
+	content: string;
+};
+
 export default async function ExperimentPage({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 	if (!id) {
@@ -29,8 +46,8 @@ export default async function ExperimentPage({ params }: { params: Promise<{ id:
 				<section className="mt-8">
 					<h2 className="mb-3 text-lg font-medium text-zinc-900 dark:text-zinc-100">Responses</h2>
 					<div className="grid gap-4 md:grid-cols-2">
-						{exp.responses
-							.sort((a, b) => (b.metrics?.aggregate ?? 0) - (a.metrics?.aggregate ?? 0))
+						{(exp.responses as RespWithMetrics[])
+							.sort((a: RespWithMetrics, b: RespWithMetrics) => (b.metrics?.aggregate ?? 0) - (a.metrics?.aggregate ?? 0))
 							.map((r) => (
 							<article key={r.id} className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
 								<header className="mb-2 flex items-center justify-between">
