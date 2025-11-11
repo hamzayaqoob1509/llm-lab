@@ -17,6 +17,18 @@ function resolveDatabaseUrl(): string | undefined {
 		const abs = path.join(process.cwd(), rel);
 		return `file:${abs}`;
 	}
+	// Neon tip: remove channel_binding if present (can fail on some Node runtimes)
+	if (raw.startsWith("postgres")) {
+		try {
+			const u = new URL(raw);
+			if (u.searchParams.get("channel_binding")) {
+				u.searchParams.delete("channel_binding");
+				return u.toString();
+			}
+		} catch {
+			// no-op, fall back to raw
+		}
+	}
 	return raw;
 }
 

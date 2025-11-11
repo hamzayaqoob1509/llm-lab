@@ -19,13 +19,17 @@ const CreateSchema = z.object({
 });
 
 export async function GET() {
-	const experiments = await prisma.experiment.findMany({
-		orderBy: { createdAt: "desc" },
-		select: {
-			id: true, createdAt: true, prompt: true, model: true, status: true, durationMs: true, totalCombinations: true,
-		},
-	});
-	return NextResponse.json({ experiments });
+	try {
+		const experiments = await prisma.experiment.findMany({
+			orderBy: { createdAt: "desc" },
+			select: {
+				id: true, createdAt: true, prompt: true, model: true, status: true, durationMs: true, totalCombinations: true,
+			},
+		});
+		return NextResponse.json({ experiments });
+	} catch (e: any) {
+		return NextResponse.json({ error: String(e?.message ?? e) }, { status: 500 });
+	}
 }
 
 export async function POST(req: NextRequest) {
