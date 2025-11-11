@@ -34,8 +34,24 @@ function resolveDatabaseUrl(): string | undefined {
 
 export async function getPrisma() {
 	if (global.prismaGlobal) return global.prismaGlobal;
-	const { PrismaClient } = await import("@prisma/client");
-	const client = new PrismaClient({
+	let PrismaClientCtor: any;
+	try {
+		const prismaModule: any = await import("@prisma/client");
+		PrismaClientCtor =
+			prismaModule?.PrismaClient ??
+			prismaModule?.default?.PrismaClient ??
+			prismaModule?.default;
+	} catch {
+		// Fallback: load generated client directly from node_modules/.prisma/client
+		const generatedPath = path.join(process.cwd(), "node_modules", ".prisma", "client", "index.js");
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const generatedModule = await import(`file://${generatedPath}`);
+		PrismaClientCtor =
+			(generatedModule as any)?.PrismaClient ??
+			(generatedModule as any)?.default?.PrismaClient ??
+			(generatedModule as any)?.default;
+	}
+	const client = new PrismaClientCtor({
 		log: ["error", "warn"],
 		datasourceUrl: resolveDatabaseUrl(),
 	});
